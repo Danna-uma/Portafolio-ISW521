@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actividad Tema 6 - Multimedia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:       #0c0e13;
+            --surface:  #13161e;
+            --card:     #191c26;
+            --border:   #252834;
+            --accent:   #e8622a;
+            --accent2:  #4f9cf8;
+            --text:     #eeeae2;
+            --muted:    #6b6f80;
+            --subtle:   #2a2e3d;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* ── HEADER ── */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 5rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 20% 50%, rgba(232,98,42,0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 60% 50% at 80% 50%, rgba(79,156,248,0.06) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .header-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid rgba(232,98,42,0.4);
+            padding: 0.35rem 1rem;
+            border-radius: 999px;
+            margin-bottom: 1.5rem;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.4rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        header h1 em {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        header p {
+            font-size: 1rem;
+            font-weight: 300;
+            color: var(--muted);
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* ── NAV ── */
+        nav {
+            background: rgba(12,14,19,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            max-width: 860px;
+            margin: 0 auto;
+            list-style: none;
+            display: flex;
+            overflow-x: auto;
+            padding: 0 1.5rem;
+            gap: 0;
+        }
+
+        nav ul li a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 1.1rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: var(--muted);
+            white-space: nowrap;
+            border-bottom: 2px solid transparent;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        nav ul li a:hover {
+            color: var(--text);
+            border-bottom-color: var(--accent);
+        }
+
+        .nav-num {
+            font-size: 0.65rem;
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* ── MAIN ── */
+        main {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 3.5rem 1.5rem 6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 5rem;
+        }
+
+        /* ── SECTION HEADER ── */
+        .sec-head {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .sec-num {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--border);
+            line-height: 1;
+            user-select: none;
+        }
+
+        .sec-info {}
+
+        .sec-label {
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.2rem;
+        }
+
+        .sec-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* ── CARD ── */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .card-media {
+            width: 100%;
+            display: block;
+            background: #000;
+        }
+
+        .card-body {
+            padding: 1.5rem 2rem 1.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.75;
+            margin-bottom: 1rem;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .tag {
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 0.28rem 0.8rem;
+            border-radius: 999px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            background: var(--subtle);
+        }
+
+        .tag.hot {
+            background: rgba(232,98,42,0.12);
+            border-color: rgba(232,98,42,0.35);
+            color: var(--accent);
+        }
+
+        .tag.cool {
+            background: rgba(79,156,248,0.1);
+            border-color: rgba(79,156,248,0.3);
+            color: var(--accent2);
+        }
+
+        /* ── IMAGEN ── */
+        #imagen picture { display: block; }
+
+        #imagen picture img {
+            width: 100%;
+            height: 320px;
+            object-fit: contain;
+            background: #0a0b10;
+            display: block;
+            padding: 2rem;
+        }
+
+        /* ── VIDEO ── */
+        #video video {
+            width: 100%;
+            height: 340px;
+            display: block;
+            background: #000;
+        }
+
+        /* ── AUDIO ── */
+        .audio-stage {
+            background: linear-gradient(135deg, #0f1119 0%, #13161e 100%);
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .audio-stage::before {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(232,98,42,0.1) 0%, transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .audio-rings {
+            position: relative;
+            width: 88px; height: 88px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .audio-rings::before,
+        .audio-rings::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(232,98,42,0.25);
+        }
+
+        .audio-rings::before { width: 88px; height: 88px; }
+        .audio-rings::after  { width: 64px; height: 64px; }
+
+        .audio-core {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .audio-core svg {
+            width: 20px; height: 20px;
+            fill: white;
+        }
+
+        .audio-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            text-align: center;
+            position: relative;
+        }
+
+        #audio audio {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+        }
+
+        /* ── MAPA ── */
+        #mapa iframe {
+            width: 100%;
+            height: 380px;
+            border: none;
+            display: block;
+            filter: grayscale(30%) contrast(1.05);
+        }
+
+        /* ── TABLA ── */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead tr {
+            background: var(--subtle);
+        }
+
+        thead th {
+            padding: 0.9rem 1.5rem;
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+
+        tbody tr:hover { background: var(--subtle); }
+
+        tbody td {
+            padding: 0.9rem 1.5rem;
+            color: var(--text);
+        }
+
+        tbody td:first-child {
+            font-weight: 500;
+            color: var(--accent2);
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            width: 100%;
+            height: 1px;
+            background: var(--border);
+            display: none;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            border-top: 1px solid var(--border);
+            background: var(--surface);
+        }
+
+        footer p {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        footer strong { color: var(--accent); }
+
+        @media (max-width: 600px) {
+            header { padding: 3.5rem 1.25rem 3rem; }
+            .card-body { padding: 1.25rem; }
+            .sec-num { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ══════════════════════════════════
+         HEADER
+    ══════════════════════════════════ -->
+    <header>
+        <div class="header-tag">Actividad · Tema 6</div>
+        <h1>Galería <em>Multimedia</em><br>Curso en Línea</h1>
+        <p>Actividad de HTML5 utilizando recursos multimedia.</p>
+    </header>
+
+    <!-- ══════════════════════════════════
+         NAVEGACIÓN
+    ══════════════════════════════════ -->
+    <nav aria-label="Secciones de la galería">
+        <ul>
+            <li><a href="#imagen"><span class="nav-num">01</span> Imagen</a></li>
+            <li><a href="#video"><span class="nav-num">02</span> Video</a></li>
+            <li><a href="#audio"><span class="nav-num">03</span> Podcast</a></li>
+            <li><a href="#mapa"><span class="nav-num">04</span> Mapa</a></li>
+            <li><a href="#tabla"><span class="nav-num">05</span> Recursos</a></li>
+        </ul>
+    </nav>
+
+    <!-- ══════════════════════════════════
+         MAIN
+    ══════════════════════════════════ -->
+    <main>
+
+        <!-- ── REQUISITO 1 ── -->
+        <section id="imagen">
+            <div class="sec-head">
+                <span class="sec-num">01</span>
+                <div class="sec-info">
+                    <p class="sec-label">Requisito 1</p>
+                    <h2 class="sec-title">Imagen Principal</h2>
+                </div>
+            </div>
+
+            <article class="card">
+                <picture class="card-media">
+                    <source
+                        srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/512px-HTML5_logo_and_wordmark.svg.png"
+                        type="image/png">
+
+                    <source
+                        srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/512px-HTML5_logo_and_wordmark.svg.png"
+                        type="image/jpeg">
+
+                    <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/512px-HTML5_logo_and_wordmark.svg.png"
+                        alt="Logotipo de HTML5"
+                        title="Imagen principal del curso"
+                        width="400">
+                </picture>
+
+                <div class="card-body">
+                    <p class="card-desc">Imagen representativa del curso de desarrollo web.</p>
+                    <div class="tags">
+                        <span class="tag hot">&lt;picture&gt;</span>
+                        <span class="tag">2 fuentes</span>
+                        <span class="tag cool">alt descriptivo</span>
+                        <span class="tag">title completo</span>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- ── REQUISITO 2 ── -->
+        <section id="video">
+            <div class="sec-head">
+                <span class="sec-num">02</span>
+                <div class="sec-info">
+                    <p class="sec-label">Requisito 2</p>
+                    <h2 class="sec-title">Video de la Clase</h2>
+                </div>
+            </div>
+
+            <article class="card">
+                <video
+                    class="card-media"
+                    width="640"
+                    controls
+                    poster="https://peach.blender.org/wp-content/uploads/title_anouncement.jpg">
+
+                    <source
+                        src="https://www.w3schools.com/html/mov_bbb.mp4"
+                        type="video/mp4">
+
+                    <source
+                        src="https://www.w3schools.com/html/mov_bbb.ogg"
+                        type="video/ogg">
+
+                    Tu navegador no soporta videos HTML5.
+                </video>
+
+                <div class="card-body">
+                    <p class="card-desc">Video demostrativo utilizado como ejemplo de clase.</p>
+                    <div class="tags">
+                        <span class="tag hot">controls</span>
+                        <span class="tag">poster</span>
+                        <span class="tag cool">2 formatos</span>
+                        <span class="tag">sin loop</span>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- ── REQUISITO 3 ── -->
+        <section id="audio">
+            <div class="sec-head">
+                <span class="sec-num">03</span>
+                <div class="sec-info">
+                    <p class="sec-label">Requisito 3</p>
+                    <h2 class="sec-title">Podcast del Curso</h2>
+                </div>
+            </div>
+
+            <article class="card">
+                <div class="audio-stage">
+                    <div class="audio-rings" aria-hidden="true">
+                        <div class="audio-core">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+                                <line x1="12" y1="19" x2="12" y2="23"/>
+                                <line x1="8" y1="23" x2="16" y2="23"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <p class="audio-title">Episodio — Contenido del Curso</p>
+
+                    <audio controls>
+                        <source
+                            src="https://www.w3schools.com/html/horse.mp3"
+                            type="audio/mpeg">
+
+                        <source
+                            src="https://www.w3schools.com/html/horse.ogg"
+                            type="audio/ogg">
+
+                        Tu navegador no soporta audio HTML5.
+                    </audio>
+                </div>
+
+                <div class="card-body">
+                    <p class="card-desc">Podcast complementario para reforzar los contenidos.</p>
+                    <div class="tags">
+                        <span class="tag hot">controls</span>
+                        <span class="tag cool">loop desactivado</span>
+                        <span class="tag">2 formatos</span>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- REQUISITO 4 -->
+        <section>
+            <h2>4. Ubicación del Centro de Estudios</h2>
+
+            <iframe
+                title="Mapa de ubicación"
+                src="https://www.google.com/maps?q=Universidad%20de%20Costa%20Rica&output=embed"
+                width="700"
+                height="450"
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-popups">
+            </iframe>
+
+            <p>
+                Ubicación de referencia mediante Google Maps.
+            </p>
+        </section>
+
+        <hr>
+        <!-- ── REQUISITO 5 ── -->
+        <section id="tabla">
+            <div class="sec-head">
+                <span class="sec-num">05</span>
+                <div class="sec-info">
+                    <p class="sec-label">Requisito 5</p>
+                    <h2 class="sec-title">Información de Recursos</h2>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Recurso</th>
+                            <th>Tecnología HTML</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Imagen</td>
+                            <td>picture + img</td>
+                        </tr>
+                        <tr>
+                            <td>Video</td>
+                            <td>video + source</td>
+                        </tr>
+                        <tr>
+                            <td>Audio</td>
+                            <td>audio + source</td>
+                        </tr>
+                        <tr>
+                            <td>Mapa</td>
+                            <td>iframe</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ══════════════════════════════════
+         FOOTER
+    ══════════════════════════════════ -->
+    <footer>
+        <p>Actividad Tema 6 — Multimedia HTML5 &nbsp;·&nbsp; <strong>HTML puro</strong></p>
+    </footer>
+
+</body>
+</html>

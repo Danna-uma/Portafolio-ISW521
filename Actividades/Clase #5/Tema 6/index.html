@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Actividad Tema 6 - Multimedia</title>
+    
+</head>
+<body>
+
+    <header>
+        <h1>Galería Multimedia - Curso en Línea</h1>
+        <p>Actividad de HTML5 utilizando recursos multimedia.</p>
+    </header>
+
+    <hr>
+
+    <main>
+
+        <!-- REQUISITO 1 -->
+        <section>
+            <h2>1. Imagen Principal</h2>
+
+            <picture>
+                <source
+                    srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/512px-HTML5_logo_and_wordmark.svg.png"
+                    type="image/png">
+
+                <source
+                    srcset="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/512px-HTML5_logo_and_wordmark.svg.png"
+                    type="image/jpeg">
+
+                <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/HTML5_logo_and_wordmark.svg/512px-HTML5_logo_and_wordmark.svg.png"
+                    alt="Logotipo de HTML5"
+                    title="Imagen principal del curso"
+                    width="400">
+            </picture>
+
+            <p>
+                Imagen representativa del curso de desarrollo web.
+            </p>
+        </section>
+
+        <hr>
+
+        <!-- REQUISITO 2 -->
+        <section>
+            <h2>2. Video de la Clase</h2>
+
+            <video
+                width="640"
+                controls
+                poster="https://peach.blender.org/wp-content/uploads/title_anouncement.jpg">
+
+                <source
+                    src="https://www.w3schools.com/html/mov_bbb.mp4"
+                    type="video/mp4">
+
+                <source
+                    src="https://www.w3schools.com/html/mov_bbb.ogg"
+                    type="video/ogg">
+
+                Tu navegador no soporta videos HTML5.
+            </video>
+
+            <p>
+                Video demostrativo utilizado como ejemplo de clase.
+            </p>
+        </section>
+
+        <hr>
+
+        <!-- REQUISITO 3 -->
+        <section>
+            <h2>3. Podcast del Curso</h2>
+
+            <audio controls>
+                <source
+                    src="https://www.w3schools.com/html/horse.mp3"
+                    type="audio/mpeg">
+
+                <source
+                    src="https://www.w3schools.com/html/horse.ogg"
+                    type="audio/ogg">
+
+                Tu navegador no soporta audio HTML5.
+            </audio>
+
+            <p>
+                Podcast complementario para reforzar los contenidos.
+            </p>
+        </section>
+
+        <hr>
+
+        <!-- REQUISITO 4 -->
+        <section>
+            <h2>4. Ubicación del Centro de Estudios</h2>
+
+            <iframe
+                title="Mapa de ubicación"
+                src="https://www.google.com/maps?q=Universidad%20de%20Costa%20Rica&output=embed"
+                width="700"
+                height="450"
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-popups">
+            </iframe>
+
+            <p>
+                Ubicación de referencia mediante Google Maps.
+            </p>
+        </section>
+
+        <hr>
+
+        <!-- REQUISITO 5 -->
+        <section>
+            <h2>5. Información de Recursos</h2>
+
+            <table border="1">
+                <tr>
+                    <th>Recurso</th>
+                    <th>Tecnología HTML</th>
+                </tr>
+
+                <tr>
+                    <td>Imagen</td>
+                    <td>picture + img</td>
+                </tr>
+
+                <tr>
+                    <td>Video</td>
+                    <td>video + source</td>
+                </tr>
+
+                <tr>
+                    <td>Audio</td>
+                    <td>audio + source</td>
+                </tr>
+
+                <tr>
+                    <td>Mapa</td>
+                    <td>iframe</td>
+                </tr>
+            </table>
+        </section>
+
+    </main>
+
+    <hr>
+
+    <footer>
+        <p>Actividad Tema 6 - Multimedia HTML5</p>
+    </footer>
+
+</body>
+</html>
