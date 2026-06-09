@@ -1,0 +1,611 @@
+:root {
+  --color-bg:          #0f1923;   /* Fondo oscuro principal */
+  --color-surface:     #162030;   /* Superficies de tarjetas */
+  --color-surface-2:   #1e2d3d;   /* Superficies elevadas */
+  --color-border:      #263647;   /* Bordes sutiles */
+ 
+  --color-primary:     #00c2e0;   /* Azul agua — acento principal */
+  --color-primary-dim: #004f5e;   /* Versión suave del acento */
+ 
+  --color-ok:          #00d68f;   /* Verde: estado normal */
+  --color-warn:        #ffaa00;   /* Amarillo: advertencia */
+  --color-danger:      #f05252;   /* Rojo: alerta crítica */
+ 
+  --color-text:        #d6e8f5;   /* Texto principal */
+  --color-text-muted:  #6b8ba4;   /* Texto secundario / etiquetas */
+ 
+  --font-main: 'Segoe UI', system-ui, -apple-system, sans-serif;
+ 
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+ 
+  --shadow:    0 2px 12px rgba(0, 0, 0, 0.35);
+}
+ 
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+ 
+body {
+  font-family: var(--font-main);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  min-height: 100vh;   
+  display: flex;
+  flex-direction: column; 
+}
+ 
+/* ============================================================
+   2. EJERCICIO 1 — BARRA DE NAVEGACIÓN
+ 
+   → justify-content: space-between esta propiedad lo que hace es que
+   distribuye los elementos hijos a lo largo del eje de manera horizontal, 
+   con el valor space-between el primer elemento se va al extremo uzquierdo
+   y ultimo al derecho, el espacio que osbra queda en medio, por eso el logo
+   queda a la izquierda, el boton a la derecha y los enlaces quedan en el 
+   centro automaticamente
+ 
+   → align-items: Esta controla como se van alinear los elementos en el eje vertical
+   con el valor center todos los hijos quedan centrados de manera vertical
+   en el navbar sin importar si es mas alto que otro, sin esto los 
+   elementos se alinearian desde arriba y no se verian iguales
+   ============================================================ */
+ 
+.navbar {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;            
+  min-height: 64px;               
+  padding: 0 24px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;            
+  top: 0;
+  z-index: 100;
+}
+ 
+.nav-logo {
+  display: flex;
+  align-items: center;  
+  gap: 10px;
+}
+ 
+.logo-icon {
+  font-size: 1.6rem;
+}
+ 
+.logo-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.03em;
+}
+ 
+.nav-links {
+  display: flex;       
+  list-style: none;    
+  gap: 8px;            
+  align-items: center;
+}
+ 
+.nav-links a {
+  text-decoration: none;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s, color 0.15s;
+}
+ 
+.nav-links a:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+}
+ 
+.btn-logout {
+  background: transparent;
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text-muted);
+  padding: 7px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+ 
+.btn-logout:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+ 
+ 
+/* ============================================================
+   3. EJERCICIO 2 — CUADRÍCULA DE SENSORES IoT
+   Concepto: flex-wrap para múltiples líneas + gap moderno
+
+   Diferencia entre align-items y align-content:
+   → La diferencia es que align items controla la alineacion de los
+   elementos dentro de cada fila individualmente, mientras que align content
+   controla como se distribuyen las filas entre si dentro del contenedor
+   el align content solo sirve si hay mas de una fila, cuando se usa junto
+   a flex-wrap: wrap
+   ============================================================ */
+ 
+.sensor-section {
+  padding: 28px 24px 8px;
+}
+ 
+.section-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  margin-bottom: 16px;
+}
+ 
+.sensor-grid {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 16px;        
+}
+ 
+.sensor-card {
+  flex-basis: calc(33.333% - 11px);
+  flex-grow: 0;      
+  flex-shrink: 1;   
+ 
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s, border-color 0.15s;
+}
+ 
+.sensor-card:hover {
+  transform: translateY(-2px);
+}
+ 
+/* Borde de color izquierdo según el estado del sensor */
+.status-ok    { border-left: 3px solid var(--color-ok); }
+.status-warn  { border-left: 3px solid var(--color-warn); }
+.status-alert { border-left: 3px solid var(--color-danger); }
+ 
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+ 
+.card-icon {
+  font-size: 1.4rem;
+}
+ 
+.card-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--color-surface-2);
+  color: var(--color-text-muted);
+}
+ 
+.status-ok .card-status    { color: var(--color-ok);     background: rgba(0, 214, 143, 0.12); }
+.status-warn .card-status  { color: var(--color-warn);   background: rgba(255, 170, 0, 0.12); }
+.status-alert .card-status { color: var(--color-danger); background: rgba(240, 82, 82, 0.12); }
+ 
+.sensor-card h3 {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+ 
+.sensor-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+ 
+.sensor-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+ 
+ 
+/* ============================================================
+   4. EJERCICIO 3 — LAYOUT PRINCIPAL (3 COLUMNAS)
+
+   Respuesta a la Reflexión 1:
+    Cuando escribimos flex: 1 estamos definiendo tres cosas a la vez, 
+    que el elemento puede crecer, que puede encogerse, y que su tamaño base
+    es 0. En cambio, flex-grow: 1 solo indica que puede crecer, pero deja el 
+    tamaño base en automático, 
+
+   Respuesta a la Reflexión 2:
+    Se usaría min-width: 180px, esta propiedad funciona como un límite mínimo,
+    sin importar cuánto intente encoger el navegador al repartir el espacio, 
+    el sidebar nunca va a ser más angosto que ese valor.
+ 
+   Respuesta a la Reflexión 3:
+    El área central se hace más grande, con flex: 3 el total de porciones 
+    era 5, por lo que el main ocupaba 3 de cada 5 partes, al cambiarlo 
+    a flex: 5 el total pasa a 7, entonces el main ocupa 5 de cada 7 partes, 
+    los paneles laterales se comprimen porque ahora tienen menos espacio 
+    disponible.
+   ============================================================ */
+ 
+.dashboard-layout {
+  display: flex;
+  flex-direction: row;            
+  flex: 1;                         
+  min-height: calc(100vh - 64px);  
+}
+ 
+/* Sidebar: flex: 1 → ocupa 1/5 del espacio disponible */
+.sidebar {
+  flex: 1;
+  min-width: 160px;  
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  padding: 24px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+ 
+.sidebar-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-muted);
+  padding: 0 20px 12px;
+}
+ 
+.sidebar-nav {
+  list-style: none;
+}
+ 
+.sidebar-item {
+  padding: 11px 20px;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+ 
+.sidebar-item:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  border-left-color: var(--color-primary);
+}
+ 
+.sidebar-item.active {
+  background: var(--color-primary-dim);
+  color: var(--color-primary);
+  border-left-color: var(--color-primary);
+  font-weight: 600;
+}
+ 
+.sidebar-footer {
+  padding: 16px 20px 0;
+}
+ 
+.system-info {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin-bottom: 4px;
+}
+ 
+.main-content {
+  flex: 3;
+  padding: 28px 24px;
+  overflow-y: auto;
+}
+ 
+.main-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+ 
+.main-header h2 {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+ 
+.live-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-ok);
+  background: rgba(0, 214, 143, 0.12);
+  padding: 4px 10px;
+  border-radius: 20px;
+  animation: pulse 2s infinite;
+}
+ 
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+ 
+.alert-panel {
+  flex: 1;
+  min-width: 180px;
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  padding: 24px 16px;
+}
+ 
+.alert-panel-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--color-text);
+}
+ 
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  margin-bottom: 10px;
+}
+ 
+.alert-warn   { border-left: 3px solid var(--color-warn); }
+.alert-info   { border-left: 3px solid var(--color-primary); }
+.alert-danger { border-left: 3px solid var(--color-danger); }
+ 
+.alert-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+ 
+.alert-msg {
+  font-size: 0.8rem;
+  color: var(--color-text);
+  margin-bottom: 3px;
+}
+ 
+.alert-time {
+  font-size: 0.7rem;
+  color: var(--color-text-muted);
+}
+ 
+.chart-container {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+ 
+.chart-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 20px;
+}
+ 
+
+.bar-chart {
+  display: flex;
+  align-items: flex-end;   
+  justify-content: space-around;
+  height: 140px;
+  gap: 8px;
+}
+ 
+.bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+}
+ 
+.bar {
+  width: 100%;
+  background: var(--color-primary-dim);
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  transition: height 0.3s ease;
+}
+ 
+.bar-active {
+  background: var(--color-primary);
+}
+ 
+.bar-projected {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--color-primary-dim),
+    var(--color-primary-dim) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  opacity: 0.6;
+}
+ 
+.bar-label {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+ 
+.metrics-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+ 
+.metric-card {
+  flex: 1;
+  min-width: 100px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  text-align: center;
+}
+ 
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+ 
+.metric-desc {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  margin-top: 4px;
+}
+
+.site-footer {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  padding: 14px 24px;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+ 
+ 
+/* ============================================================
+   6. EJERCICIO 4 — RESPONSIVIDAD MÓVIL
+
+   se usa main-height en lugar de height ya que heigth fija el tamaño
+   exacto del contenedor, lo que signofica que si el contenido es mas
+   grande que el viewport se sale del conetendor y el layout se rompe 
+   en cambio con main-height garantizxa que el contendor nunca sea menor al 100%
+   de la pantalla pero si el contenido ocupa mas espacio el contendor crece
+   sin problema.
+
+   ============================================================ */
+ 
+@media (max-width: 768px) {
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+ 
+  .navbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+    min-height: auto;
+  }
+ 
+  .nav-links {
+    order: 3;         
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+ 
+  .sensor-card {
+    flex-basis: 100%;  
+  }
+ 
+  .dashboard-layout {
+    flex-direction: column;
+    min-height: auto;
+  }
+ 
+  .sidebar {
+    flex: none;          
+    width: 100%;         
+    min-height: auto;
+    padding: 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+ 
+  .sidebar-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+ 
+  .sidebar-item {
+    border-left: none;
+    border-bottom: 2px solid transparent;
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 0.82rem;
+  }
+ 
+  .sidebar-item.active {
+    border-left: none;
+    border-bottom-color: var(--color-primary);
+  }
+ 
+  .sidebar-footer {
+    display: none;  
+  }
+ 
+  .main-content {
+    flex: 1;           
+    padding: 20px 16px;
+    min-height: 50vh;  
+  }
+
+  .alert-panel {
+    flex: none;
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    min-height: auto;
+  }
+ 
+  .metric-card {
+    flex-basis: calc(50% - 6px);
+  }
+ 
+  .bar-chart {
+    height: 100px;
+  }
+ 
+  .sensor-section {
+    padding: 20px 16px 8px;
+  }
+}
+ 
+@media (max-width: 480px) {
+  .metric-card {
+    flex-basis: 100%;  
+  }
+ 
+  .bar-label {
+    display: none;  
+  }
+}
+ 

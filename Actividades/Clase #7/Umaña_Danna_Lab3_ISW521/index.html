@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Flexbox</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-logo">
+      <span class="logo-icon">💧</span>
+      <span class="logo-text">AcueductosIoT</span>
+    </div>
+ 
+    <ul class="nav-links">
+      <li><a href="#">Inicio</a></li>
+      <li><a href="#">Sensores</a></li>
+      <li><a href="#">Alertas</a></li>
+      <li><a href="#">Reportes</a></li>
+    </ul>
+ 
+    <button class="btn-logout">Cerrar Sesión</button>
+  </nav>
+ 
+  <section class="sensor-section">
+    <h2 class="section-title">Puntos de Medición — Red de Acueductos</h2>
+ 
+    <div class="sensor-grid">
+ 
+      <div class="sensor-card status-ok">
+        <div class="card-header">
+          <span class="card-icon">💧</span>
+          <span class="card-status">Normal</span>
+        </div>
+        <h3>Nivel de Tanque Principal</h3>
+        <p class="sensor-value">73%</p>
+        <p class="sensor-label">Sector A — Actualizado hace 2 min</p>
+      </div>
+ 
+      <div class="sensor-card status-warn">
+        <div class="card-header">
+          <span class="card-icon">📊</span>
+          <span class="card-status">Bajo</span>
+        </div>
+        <h3>Presión de Red (Calle 2)</h3>
+        <p class="sensor-value">28 PSI</p>
+        <p class="sensor-label">Mínimo: 35 PSI — Hace 1 min</p>
+      </div>
+ 
+      <div class="sensor-card status-ok">
+        <div class="card-header">
+          <span class="card-icon">🧪</span>
+          <span class="card-status">Óptimo</span>
+        </div>
+        <h3>Calidad del Agua (Cloro)</h3>
+        <p class="sensor-value">0.8 mg/L</p>
+        <p class="sensor-label">Rango aceptable: 0.2–1.0 mg/L</p>
+      </div>
+ 
+      <div class="sensor-card status-ok">
+        <div class="card-header">
+          <span class="card-icon">🌊</span>
+          <span class="card-status">Estable</span>
+        </div>
+        <h3>Caudal de Entrada</h3>
+        <p class="sensor-value">142 L/min</p>
+        <p class="sensor-label">Naciente Sur — Hace 3 min</p>
+      </div>
+ 
+      <div class="sensor-card status-ok">
+        <div class="card-header">
+          <span class="card-icon">🌡️</span>
+          <span class="card-status">Normal</span>
+        </div>
+        <h3>Temperatura del Agua</h3>
+        <p class="sensor-value">18.4 °C</p>
+        <p class="sensor-label">Pozo Profundo 2 — Hace 5 min</p>
+      </div>
+ 
+      <div class="sensor-card status-alert">
+        <div class="card-header">
+          <span class="card-icon">⚙️</span>
+          <span class="card-status">Revisar</span>
+        </div>
+        <h3>Válvula de Emergencia</h3>
+        <p class="sensor-value">Abierta</p>
+        <p class="sensor-label">Sector C — Activación manual</p>
+      </div>
+ 
+    </div>
+  </section>
+ 
+  <div class="dashboard-layout">
+ 
+    <!-- Sidebar izquierdo: flex: 1 → 1/5 del ancho -->
+    <aside class="sidebar">
+      <p class="sidebar-label">Navegación</p>
+      <nav>
+        <ul class="sidebar-nav">
+          <li class="sidebar-item active">📊 Resumen</li>
+          <li class="sidebar-item">💧 Tanques</li>
+          <li class="sidebar-item">⚡ Presiones</li>
+          <li class="sidebar-item">🧪 Calidad</li>
+          <li class="sidebar-item">⚙️ Configuración</li>
+        </ul>
+      </nav>
+ 
+      <div class="sidebar-footer">
+        <p class="system-info">Sistema v2.4.1</p>
+        <p class="system-info">🟢 Conexión activa</p>
+      </div>
+    </aside>
+ 
+    <!-- Contenido principal: flex: 3 → 3/5 del ancho -->
+    <main class="main-content">
+      <div class="main-header">
+        <h2>Gráficos de Monitoreo en Tiempo Real</h2>
+        <span class="live-badge">● EN VIVO</span>
+      </div>
+ 
+      <!-- Gráfico simulado de barras -->
+      <div class="chart-container">
+        <h3 class="chart-title">Nivel de Tanques — Últimas 6 horas</h3>
+        <div class="bar-chart">
+          <div class="bar-wrap"><div class="bar" style="height: 65%"><span class="bar-label">08:00</span></div></div>
+          <div class="bar-wrap"><div class="bar" style="height: 70%"><span class="bar-label">09:00</span></div></div>
+          <div class="bar-wrap"><div class="bar" style="height: 80%"><span class="bar-label">10:00</span></div></div>
+          <div class="bar-wrap"><div class="bar" style="height: 73%"><span class="bar-label">11:00</span></div></div>
+          <div class="bar-wrap"><div class="bar bar-active" style="height: 73%"><span class="bar-label">12:00</span></div></div>
+          <div class="bar-wrap"><div class="bar bar-projected" style="height: 68%"><span class="bar-label">13:00</span></div></div>
+        </div>
+      </div>
+ 
+      <!-- Métricas rápidas -->
+      <div class="metrics-row">
+        <div class="metric-card">
+          <p class="metric-value">6</p>
+          <p class="metric-desc">Sensores activos</p>
+        </div>
+        <div class="metric-card">
+          <p class="metric-value">1</p>
+          <p class="metric-desc">Alertas activas</p>
+        </div>
+        <div class="metric-card">
+          <p class="metric-value">99.2%</p>
+          <p class="metric-desc">Disponibilidad</p>
+        </div>
+        <div class="metric-card">
+          <p class="metric-value">2 min</p>
+          <p class="metric-desc">Última actualización</p>
+        </div>
+      </div>
+    </main>
+ 
+    <!-- Panel derecho de alertas: flex: 1 → 1/5 del ancho -->
+    <aside class="alert-panel">
+      <h3 class="alert-panel-title">🔔 Alertas Activas</h3>
+ 
+      <div class="alert alert-warn">
+        <span class="alert-icon">⚠️</span>
+        <div>
+          <p class="alert-msg">Presión baja — Sector B</p>
+          <p class="alert-time">Hace 8 min</p>
+        </div>
+      </div>
+ 
+      <div class="alert alert-info">
+        <span class="alert-icon">✅</span>
+        <div>
+          <p class="alert-msg">Cloro en rango normal</p>
+          <p class="alert-time">Hace 15 min</p>
+        </div>
+      </div>
+ 
+      <div class="alert alert-danger">
+        <span class="alert-icon">🚨</span>
+        <div>
+          <p class="alert-msg">Válvula C abierta manualmente</p>
+          <p class="alert-time">Hace 22 min</p>
+        </div>
+      </div>
+ 
+      <div class="alert alert-info">
+        <span class="alert-icon">ℹ️</span>
+        <div>
+          <p class="alert-msg">Mantenimiento programado</p>
+          <p class="alert-time">Mañana 07:00</p>
+        </div>
+      </div>
+    </aside>
+ 
+  </div><!-- fin .dashboard-layout -->
+ 
+  <footer class="site-footer">
+    <p>© 2025 AcueductosIoT — Cooperativa de Acueductos Comunitarios, Guanacaste</p>
+    <p>ISW-521 · Universidad Técnica Nacional</p>
+  </footer>
+ 
+</body>
+</html>
