@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toyota bZ4X — Dashboard 3D Interactivo</title>
+    <meta name="description"
+        content="Dashboard premium interactivo con configurador 3D en tiempo real del SUV eléctrico Toyota bZ4X utilizando Three.js.">
+
+    <!-- Importmap para Three.js y Addons -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         DASHBOARD PRINCIPAL
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="dashboard-wrapper">
+
+        <!-- ZONA A: Header Minimalista Premium -->
+        <header class="dashboard-header" id="main-header">
+            <div class="header-brand">
+                <span class="header-logo" aria-hidden="true">⚡</span>
+                <div>
+                    <h1 class="project-title">Toyota bZ4X <span class="title-year">3D</span></h1>
+                    <p class="project-subtitle">Configurador y Centro de Servicio Técnico Oficial · SUV 100% Eléctrico
+                    </p>
+                </div>
+            </div>
+            <div class="header-meta">
+                <div class="header-meta-actions"
+                    style="display: flex; gap: var(--sp-sm); align-items: center; justify-content: flex-end;">
+                    <button id="theme-toggle" class="btn-theme-toggle" aria-label="Alternar modo oscuro"
+                        title="Alternar modo oscuro">
+                        <span class="theme-icon-light">🌕</span>
+                        <span class="theme-icon-dark" style="display: none;">🔆</span>
+                    </button>
+                    <span class="badge badge--active">Inspección 3D</span>
+                </div>
+                <p class="meta-date">Ingreso: 05 / 06 / 2026</p>
+                <p class="meta-tech">Técnico: Rodrigo Vargas M.</p>
+            </div>
+        </header>
+
+        <!-- ZONA B: Vehicle 3D Configurator & Hero (Mínimo 70vh) -->
+        <section class="vehicle-hero" aria-label="Visualizador del Vehículo 3D">
+            <!-- Toolbar de controles de imagen (conectados a la cámara 3D) -->
+            <div class="image-toolbar" role="toolbar" aria-label="Controles de cámara">
+                <button id="btn-zoom-in" class="img-ctrl-btn" title="Acercar" aria-label="Acercar cámara">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        <line x1="11" y1="8" x2="11" y2="14" />
+                        <line x1="8" y1="11" x2="14" y2="11" />
+                    </svg>
+                </button>
+                <button id="btn-zoom-out" class="img-ctrl-btn" title="Alejar" aria-label="Alejar cámara">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <circle cx="11" cy="11" r="8" />
+                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        <line x1="8" y1="11" x2="14" y2="11" />
+                    </svg>
+                </button>
+                <input id="zoom-slider" class="zoom-slider" type="range" min="3" max="15" value="6" step="0.1"
+                    aria-label="Distancia de cámara">
+                <span id="zoom-label" class="zoom-label" aria-live="polite">6.0m</span>
+                <div class="toolbar-sep" aria-hidden="true"></div>
+                <button id="btn-reset" class="img-ctrl-btn" title="Restablecer cámara" aria-label="Restablecer cámara">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 1 0 .49-3.62" />
+                    </svg>
+                </button>
+                <button id="btn-fullscreen" class="img-ctrl-btn img-ctrl-btn--highlight" title="Pantalla completa"
+                    aria-label="Ver en pantalla completa">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <polyline points="15 3 21 3 21 9" />
+                        <polyline points="9 21 3 21 3 15" />
+                        <line x1="21" y1="3" x2="14" y2="10" />
+                        <line x1="3" y1="21" x2="10" y2="14" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Contenedor del Canvas 3D de Three.js -->
+            <figure class="hero-figure" id="hero-figure">
+                <div id="canvas3d-container" class="canvas3d-container">
+                    <!-- Overlay de progreso de carga de GLB -->
+                    <div id="glb-loader" class="glb-loader">
+                        <div class="loader-spinner"></div>
+                        <p class="loader-text">Descargando Toyota bZ4X (29 MB)...</p>
+                        <div class="loader-progress-bar">
+                            <div id="loader-progress-fill" class="loader-progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span id="loader-percentage" class="loader-percentage">0%</span>
+                    </div>
+                </div>
+
+                <figcaption class="hero-caption">
+                    <span id="active-view-name">Cargando escenario 3D...</span>
+                    <span class="caption-hint">🖱 Clic + Arrastrar para rotar · 🔍 Rueda para zoom · 📱 Táctil
+                        multi-touch</span>
+                </figcaption>
+            </figure>
+
+            <div class="hero-progress">
+                <div class="progress-bar" role="progressbar" aria-valuenow="52" aria-valuemin="0" aria-valuemax="100"
+                    aria-label="Avance general del servicio 52%">
+                    <div class="progress-fill" style="--progress:52%"></div>
+                    <span class="progress-marker" style="--pos:52%">52%</span>
+                </div>
+                <p class="progress-label">Avance general de inspección: <strong>52%</strong></p>
+            </div>
+        </section>
+
+        <!-- ZONA C: Sidebar (Datos y Especificaciones) -->
+        <aside class="project-sidebar">
+
+            <!-- EXTRAS PREMIUM: Tarjeta de Especificaciones -->
+            <div class="sidebar-card spec-card" id="card-specifications">
+                <h2 class="sidebar-card__title">
+                    <span class="card-title-icon" aria-hidden="true">📊</span>
+                    Especificaciones Toyota bZ4X
+                </h2>
+                <div class="spec-list">
+                    <div class="spec-item">
+                        <div class="spec-header">
+                            <span class="spec-label">Motorización Eléctrica</span>
+                            <span class="spec-value">Dual Motor AWD</span>
+                        </div>
+                        <div class="spec-bar-bg" title="217 kW (AWD)">
+                            <div class="spec-bar-fill" style="width: 85%"></div>
+                        </div>
+                    </div>
+
+                    <div class="spec-item">
+                        <div class="spec-header">
+                            <span class="spec-label">Autonomía Estimada</span>
+                            <span class="spec-value">460 km (WLTP)</span>
+                        </div>
+                        <div class="spec-bar-bg" title="460 km">
+                            <div class="spec-bar-fill" style="width: 76%"></div>
+                        </div>
+                    </div>
+
+                    <div class="spec-item">
+                        <div class="spec-header">
+                            <span class="spec-label">Potencia Máxima</span>
+                            <span class="spec-value">308 CV (217 kW)</span>
+                        </div>
+                        <div class="spec-bar-bg" title="308 CV">
+                            <div class="spec-bar-fill" style="width: 80%"></div>
+                        </div>
+                    </div>
+
+                    <div class="spec-item">
+                        <div class="spec-header">
+                            <span class="spec-label">Torque Máximo</span>
+                            <span class="spec-value">337 Nm</span>
+                        </div>
+                        <div class="spec-bar-bg" title="337 Nm">
+                            <div class="spec-bar-fill" style="width: 70%"></div>
+                        </div>
+                    </div>
+
+                    <div class="spec-item">
+                        <div class="spec-header">
+                            <span class="spec-label">Tipo de Batería</span>
+                            <span class="spec-value">Iones de Litio (71.4 kWh)</span>
+                        </div>
+                        <div class="spec-bar-bg" title="71.4 kWh">
+                            <div class="spec-bar-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+
+                    <div class="spec-item">
+                        <div class="spec-header">
+                            <span class="spec-label">Carga Rápida DC (0-80%)</span>
+                            <span class="spec-value">30 min (150 kW)</span>
+                        </div>
+                        <div class="spec-bar-bg" title="150 kW Max">
+                            <div class="spec-bar-fill" style="width: 95%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Datos del servicio -->
+            <div class="sidebar-card" id="card-service-data">
+                <h2 class="sidebar-card__title"><span class="card-title-icon" aria-hidden="true">📋</span> Datos de
+                    Ficha</h2>
+                <dl class="project-data">
+                    <dt>Placa</dt>
+                    <dd>EV-8820</dd>
+                    <dt>VIN</dt>
+                    <dd>JTMAB3FV4PD012748</dd>
+                    <dt>Versión</dt>
+                    <dd>AWD Limited Edition</dd>
+                    <dt>Batería Estado</dt>
+                    <dd>SOH 97% · Excelente</dd>
+                    <dt>Kilometraje</dt>
+                    <dd>28 540 km</dd>
+                    <dt>Presupuesto</dt>
+                    <dd>₡ 3 200 000</dd>
+                    <dt>Ejecutado</dt>
+                    <dd>₡ 1 480 000</dd>
+                </dl>
+                <div class="budget-gauge" aria-label="Presupuesto ejecutado">
+                    <div class="budget-fill" style="--budget-pct:46.3%"></div>
+                    <span class="budget-pct-label">46.3%</span>
+                </div>
+            </div>
+
+            <!-- Alertas técnicas -->
+            <div class="sidebar-card sidebar-card--alert" id="card-alerts">
+                <h2 class="sidebar-card__title"><span class="card-title-icon" aria-hidden="true">⚠</span> Notificaciones
+                </h2>
+                <ul class="alert-list" role="list">
+                    <li class="alert-item alert-item--warning">Módulo de carga DC pendiente de diagnóstico</li>
+                    <li class="alert-item alert-item--danger">Actualización de firmware OTA en espera</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- SECCIONES DE CONFIGURADOR: Color y Presets de Cámara 3D -->
+        <section class="config-controls-section" aria-label="Personalización y Vista">
+            <div class="config-grid">
+
+                <!-- Personalizador de Color -->
+                <div class="config-card" id="section-color-picker">
+                    <h2 class="config-card-title">
+                        <span class="config-icon" aria-hidden="true">🎨</span>
+                        Personalización del Vehículo
+                    </h2>
+                    <p class="config-card-desc">Elige un tono premium para la carrocería del bZ4X.</p>
+
+                    <div class="color-options-container">
+                        <div class="color-swatches" role="radiogroup" aria-label="Colores de carrocería">
+                            <button class="color-swatch-btn active" data-color="#B22222" title="Rojo Carmesí"
+                                aria-label="Rojo Carmesí"
+                                style="background: radial-gradient(circle at 35% 35%, #DC143C, #8B0000);"></button>
+                            <button class="color-swatch-btn" data-color="#F5F5F0" title="Blanco Perlado"
+                                aria-label="Blanco Perlado"
+                                style="background: radial-gradient(circle at 35% 35%, #FFFFFF, #EAEAE0); border: 1px solid #CBD5E1;"></button>
+                            <button class="color-swatch-btn" data-color="#121212" title="Negro Eclipse"
+                                aria-label="Negro Eclipse"
+                                style="background: radial-gradient(circle at 35% 35%, #333333, #09090B);"></button>
+                            <button class="color-swatch-btn" data-color="#4F5154" title="Gris Titanio"
+                                aria-label="Gris Titanio"
+                                style="background: radial-gradient(circle at 35% 35%, #71717A, #3F3F46);"></button>
+                            <button class="color-swatch-btn" data-color="#0033A0" title="Azul Eléctrico"
+                                aria-label="Azul Eléctrico"
+                                style="background: radial-gradient(circle at 35% 35%, #2563EB, #001E62);"></button>
+                            <button class="color-swatch-btn" data-color="#A5A9B4" title="Plata Lunar"
+                                aria-label="Plata Lunar"
+                                style="background: radial-gradient(circle at 35% 35%, #E2E8F0, #8A93A4);"></button>
+                        </div>
+                        <div class="selected-color-info">
+                            <span class="color-info-label">Color activo:</span>
+                            <span id="selected-color-name" class="color-info-value">Rojo Carmesí</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visor Interactivo 3D - Presets de Cámara -->
+                <div class="config-card" id="section-360-viewer">
+                    <h2 class="config-card-title">
+                        <span class="config-icon" aria-hidden="true">🎥</span>
+                        Ángulos de Cámara Presets
+                    </h2>
+                    <p class="config-card-desc">Transición automática de cámara hacia perspectivas clave.</p>
+
+                    <div class="viewer-controls-grid">
+                        <button id="btn-view-front" class="btn-ctrl-360" title="Vista de frente">
+                            <span>Vista Frontal</span>
+                        </button>
+                        <button id="btn-view-rear" class="btn-ctrl-360" title="Vista trasera">
+                            <span>Vista Trasera</span>
+                        </button>
+                        <button id="btn-view-left" class="btn-ctrl-360" title="Vista lateral izquierda">
+                            <span>Lateral Izquierdo</span>
+                        </button>
+                        <button id="btn-view-right" class="btn-ctrl-360" title="Vista lateral derecha">
+                            <span>Lateral Derecho</span>
+                        </button>
+                        <button id="btn-view-top" class="btn-ctrl-360" title="Vista superior aérea">
+                            <span>Vista Superior</span>
+                        </button>
+                        <button id="btn-view-reset" class="btn-ctrl-360 btn-ctrl-360--reset"
+                            title="Restablecer cámara y zoom">
+                            <span>Restaurar Vista</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ZONA STATS: Estadísticas de Rendimiento -->
+        <section class="stats-section" aria-labelledby="stats-heading">
+            <h2 id="stats-heading" class="sr-only">Estadísticas del vehículo</h2>
+            <div class="stats-grid">
+                <div class="stat-card" data-count="217" data-suffix=" kW">
+                    <span class="stat-icon" aria-hidden="true">⚡</span>
+                    <span class="stat-value">0 kW</span>
+                    <span class="stat-label">Potencia de Sistema</span>
+                </div>
+                <div class="stat-card" data-count="71" data-suffix=".4 kWh">
+                    <span class="stat-icon" aria-hidden="true">🔋</span>
+                    <span class="stat-value">0 kWh</span>
+                    <span class="stat-label">Capacidad de Batería</span>
+                </div>
+                <div class="stat-card" data-count="460" data-suffix=" km">
+                    <span class="stat-icon" aria-hidden="true">🛣</span>
+                    <span class="stat-value">0 km</span>
+                    <span class="stat-label">Rango Estimado</span>
+                </div>
+                <div class="stat-card" data-count="6.9" data-suffix=" s" data-decimals="1">
+                    <span class="stat-icon" aria-hidden="true">🏎</span>
+                    <span class="stat-value">0 s</span>
+                    <span class="stat-label">0–100 km/h</span>
+                </div>
+                <div class="stat-card" data-count="150" data-suffix=" kW">
+                    <span class="stat-icon" aria-hidden="true">🔌</span>
+                    <span class="stat-value">0 kW</span>
+                    <span class="stat-label">Carga Rápida DC</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ZONA VIDEO: Video Oficial -->
+        <section class="video-section" aria-labelledby="video-heading">
+            <h2 id="video-heading" class="section-title">
+                <span class="section-title__line" aria-hidden="true"></span>
+                Presentación y Tecnología
+                <span class="section-title__badge">▶ Video Oficial</span>
+            </h2>
+            <div class="video-layout">
+                <div class="video-card">
+                    <div class="video-frame-wrapper">
+                        <iframe class="video-iframe"
+                            src="https://www.youtube.com/embed/CfIDRD9cXj4?rel=0&modestbranding=1&color=white"
+                            title="Toyota bZ4X — Presentación del SUV 100% Eléctrico" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen loading="lazy">
+                        </iframe>
+                    </div>
+                </div>
+                <div class="video-info-card">
+                    <div class="video-tags">
+                        <span class="video-tag">⚡ EV Premium</span>
+                        <span class="video-tag">🏭 Toyota OEM</span>
+                        <span class="video-tag">🌿 Eco Friendly</span>
+                    </div>
+                    <h3 class="video-title">Plataforma e-TNGA Dedicada</h3>
+                    <p class="video-desc">
+                        El Toyota bZ4X inaugura una nueva era en vehículos eléctricos de batería. Construido sobre la
+                        plataforma modular e-TNGA específicamente desarrollada para EVs, logra un centro de gravedad
+                        ultra bajo, una distribución de peso óptima y una rigidez excepcional para un manejo sumamente
+                        dinámico y seguro.
+                    </p>
+                    <ul class="video-features">
+                        <li>🔋 Celdas de batería con refrigeración líquida inteligente</li>
+                        <li>🛡 Toyota Safety Sense 3.0 de serie</li>
+                        <li>⚙ Tracción integral inteligente Subaru X-MODE integrada</li>
+                        <li>🌱 Construcción sostenible con materiales reciclados</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- ZONA D: Estado de sistemas -->
+        <section class="status-section" aria-labelledby="status-heading">
+            <h2 id="status-heading" class="section-title">
+                <span class="section-title__line" aria-hidden="true"></span>
+                Estado del Diagnóstico
+                <span class="section-title__badge">6 módulos</span>
+            </h2>
+            <div class="status-grid">
+
+                <article class="status-card status-card--done">
+                    <header class="status-card__header">
+                        <span class="status-icon" aria-hidden="true">🔋</span>
+                        <h3 class="status-card__name">Módulo de Baterías</h3>
+                    </header>
+                    <p class="status-card__state">Completado</p>
+                    <p class="status-card__detail">Capacidad al 97%. Celdas balanceadas e impedancia en rango nominal.
+                    </p>
+                    <meter class="status-meter" value="100" min="0" max="100" title="100%"></meter>
+                    <span class="status-pct">100%</span>
+                </article>
+
+                <article class="status-card status-card--in-progress">
+                    <header class="status-card__header">
+                        <span class="status-icon" aria-hidden="true">⚡</span>
+                        <h3 class="status-card__name">Puerto de Carga y OBC</h3>
+                    </header>
+                    <p class="status-card__state">En Proceso</p>
+                    <p class="status-card__detail">Puerto CCS2 con resistencia de aislamiento marginal. Pendiente
+                        reemplazar.</p>
+                    <meter class="status-meter" value="60" min="0" max="100" title="60%"></meter>
+                    <span class="status-pct">60%</span>
+                </article>
+
+                <article class="status-card status-card--pending">
+                    <header class="status-card__header">
+                        <span class="status-icon" aria-hidden="true">💻</span>
+                        <h3 class="status-card__name">Unidad de Control (ECU)</h3>
+                    </header>
+                    <p class="status-card__state">Pendiente</p>
+                    <p class="status-card__detail">Actualización de firmware OTA en cola. Mejora del cálculo de
+                        autonomía.</p>
+                    <meter class="status-meter" value="5" min="0" max="100" title="5%"></meter>
+                    <span class="status-pct">5%</span>
+                </article>
+
+                <article class="status-card status-card--pending">
+                    <header class="status-card__header">
+                        <span class="status-icon" aria-hidden="true">🛞</span>
+                        <h3 class="status-card__name">Tren de Rodaje y Dirección</h3>
+                    </header>
+                    <p class="status-card__state">Pendiente</p>
+                    <p class="status-card__detail">Revisión de amortiguadores y rotación de neumáticos programada.</p>
+                    <meter class="status-meter" value="0" min="0" max="100" title="0%"></meter>
+                    <span class="status-pct">0%</span>
+                </article>
+
+                <article class="status-card status-card--done">
+                    <header class="status-card__header">
+                        <span class="status-icon" aria-hidden="true">🧊</span>
+                        <h3 class="status-card__name">Bomba de Calor y Clima</h3>
+                    </header>
+                    <p class="status-card__state">Completado</p>
+                    <p class="status-card__detail">Presiones y flujo de refrigerante óptimos. Filtro de cabina
+                        reemplazado.</p>
+                    <meter class="status-meter" value="100" min="0" max="100" title="100%"></meter>
+                    <span class="status-pct">100%</span>
+                </article>
+
+                <article class="status-card status-card--in-progress">
+                    <header class="status-card__header">
+                        <span class="status-icon" aria-hidden="true">🛡</span>
+                        <h3 class="status-card__name">Sistemas ADAS y Radar</h3>
+                    </header>
+                    <p class="status-card__state">En Proceso</p>
+                    <p class="status-card__detail">Calibración de sensores de colisión e inspección de cámaras
+                        frontales.</p>
+                    <meter class="status-meter" value="40" min="0" max="100" title="40%"></meter>
+                    <span class="status-pct">40%</span>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ZONA E: Inventario de repuestos -->
+        <section class="inventory-section" aria-labelledby="inventory-heading">
+            <h2 id="inventory-heading" class="section-title">
+                <span class="section-title__line" aria-hidden="true"></span>
+                Orden de Repuestos Originales
+                <span class="section-title__badge">5 ítems</span>
+            </h2>
+            <ul class="parts-list" role="list">
+
+                <li class="parts-item">
+                    <div class="part-info">
+                        <span class="part-icon" aria-hidden="true">🔌</span>
+                        <div class="part-details">
+                            <p class="part-name">Puerto de Carga DC CCS2 OEM</p>
+                            <p class="part-sku">SKU: 85529-42010 · Toyota Genuine Parts</p>
+                        </div>
+                    </div>
+                    <span class="part-price">₡ 420 000</span>
+                    <div class="part-actions">
+                        <span class="badge badge--stock-ok">En Stock</span>
+                        <button class="btn-buy" type="button"
+                            aria-label="Ordenar Puerto de Carga DC CCS2">Ordenar</button>
+                    </div>
+                </li>
+
+                <li class="parts-item">
+                    <div class="part-info">
+                        <span class="part-icon" aria-hidden="true">🧴</span>
+                        <div class="part-details">
+                            <p class="part-name">Refrigerante de Batería Super Long Life (4L)</p>
+                            <p class="part-sku">SKU: 08889-80015 · Toyota OEM</p>
+                        </div>
+                    </div>
+                    <span class="part-price">₡ 48 000</span>
+                    <div class="part-actions">
+                        <span class="badge badge--stock-ok">En Stock</span>
+                        <button class="btn-buy" type="button"
+                            aria-label="Ordenar Refrigerante de Batería">Ordenar</button>
+                    </div>
+                </li>
+
+                <li class="parts-item">
+                    <div class="part-info">
+                        <span class="part-icon" aria-hidden="true">🛞</span>
+                        <div class="part-details">
+                            <p class="part-name">Neumáticos Michelin Primacy 4+ 235/60 R18</p>
+                            <p class="part-sku">SKU: MCH-P4-23560R18 · Michelin</p>
+                        </div>
+                    </div>
+                    <span class="part-price">₡ 580 000</span>
+                    <div class="part-actions">
+                        <span class="badge badge--stock-low">Pocas Unidades</span>
+                        <button class="btn-buy" type="button" aria-label="Ordenar Neumáticos Michelin">Ordenar</button>
+                    </div>
+                </li>
+
+                <li class="parts-item">
+                    <div class="part-info">
+                        <span class="part-icon" aria-hidden="true">📡</span>
+                        <div class="part-details">
+                            <p class="part-name">Módulo Radar Frontal Safety Sense 3.0</p>
+                            <p class="part-sku">SKU: 88210-42130 · Toyota OEM</p>
+                        </div>
+                    </div>
+                    <span class="part-price">₡ 890 000</span>
+                    <div class="part-actions">
+                        <span class="badge badge--out-of-stock">Bajo Pedido</span>
+                        <button class="btn-buy" type="button" aria-label="Cotizar Módulo Radar"
+                            disabled>Cotizar</button>
+                    </div>
+                </li>
+
+                <li class="parts-item">
+                    <div class="part-info">
+                        <span class="part-icon" aria-hidden="true">🔧</span>
+                        <div class="part-details">
+                            <p class="part-name">Kit de Suspensión y Amortiguadores Traseros</p>
+                            <p class="part-sku">SKU: 48530-42320 · Toyota Genuine Parts</p>
+                        </div>
+                    </div>
+                    <span class="part-price">₡ 340 000</span>
+                    <div class="part-actions">
+                        <span class="badge badge--stock-ok">En Stock</span>
+                        <button class="btn-buy" type="button" aria-label="Ordenar Amortiguadores">Ordenar</button>
+                    </div>
+                </li>
+
+            </ul>
+        </section>
+
+        <!-- ZONA F: Footer de la Concesionaria/Taller -->
+        <footer class="dashboard-footer">
+            <div class="footer-brand">
+                <p class="footer-name">Centro de Servicio Técnico Especializado</p>
+                <p class="footer-address">San Carlos, Alajuela · Costa Rica</p>
+            </div>
+            <div class="footer-contact">
+                <p>📞 2460-3381 · 8899-4412</p>
+                <p>📧 servicio@tallerautorizado.cr</p>
+            </div>
+            <div class="footer-legal">
+                <p class="footer-budget-status">Orden de Trabajo N.° <strong>RV-2026-061</strong> — Aprobada por
+                    Propietario</p>
+                <p class="footer-disclaimer">Los precios de repuestos no incluyen IVA. Sujetos a cambios oficiales.</p>
+            </div>
+        </footer>
+
+    </div><!-- /.dashboard-wrapper -->
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MODAL PANTALLA COMPLETA 3D
+         ═══════════════════════════════════════════════════════════ -->
+    <div id="fullscreen-modal" class="fullscreen-modal" role="dialog" aria-modal="true"
+        aria-label="Escenario 3D en pantalla completa" hidden>
+        <button id="modal-close" class="modal-close" aria-label="Cerrar">✕</button>
+        <div class="modal-img-container" id="modal-img-container">
+            <!-- El canvas 3D se moverá o duplicará aquí temporalmente -->
+        </div>
+        <div class="modal-controls">
+            <button id="modal-zoom-in" class="modal-ctrl-btn" aria-label="Acercar">+</button>
+            <button id="modal-reset" class="modal-ctrl-btn modal-ctrl-btn--reset" aria-label="Restablecer">↺</button>
+            <button id="modal-zoom-out" class="modal-ctrl-btn" aria-label="Alejar">−</button>
+        </div>
+        <p class="modal-hint">Arrastra para girar · Rueda para zoom · <kbd>ESC</kbd> para cerrar</p>
+    </div>
+
+    <!-- Toast de notificación -->
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Cargar script.js como módulo ES6 -->
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
