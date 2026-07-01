@@ -1,31 +1,20 @@
-const nombreSoda = "La Sodita UTN";
-const pedidos = [];
- 
-export function crearPedido(cliente, producto, precio, notas) {
-  const pedido = {
-    cliente: cliente,
-    producto: producto,
-    precio: precio,
-    notas: notas
-  };
+export const nombreSoda = "La Sodita UTN";
+
+export const pedidos = [];
+
+export function crearPedido(
+  { cliente, producto, precio, notas }, ...extras) {
+  const pedido = {cliente, producto, precio, notas, extras};
   pedidos.push(pedido);
-  console.log("Pedido creado para " + cliente + ": " + producto + " - " + precio);
   return pedido;
-}
- 
+};
+
 export function calcularTotalDia() {
-  const total = 0;
-  for (const i = 0; i < pedidos.length; i++) {
-    total = total + pedidos[i].precio;
-  }
-  return total;
-}
- 
+  return pedidos.reduce((total, pedido) => {const precio = pedido.precio ?? 0;
+    return total + precio;}, 0);
+};
+
 export function aplicarDescuento(pedido, porcentaje) {
-  pedido.precio = pedido.precio - (pedido.precio * porcentaje / 100);
-  return pedido;
-}
- 
-crearPedido("Ana", "Casado", 2500, "Sin cebolla");
-crearPedido("Luis", "Cafe con pan", 1200, undefined);
-console.log("Total del dia: " + calcularTotalDia());
+  const nuevoPrecio = (pedido.precio ?? 0) - ((pedido.precio ?? 0) * porcentaje) / 100;
+  return { ...pedido, precio: nuevoPrecio};
+};

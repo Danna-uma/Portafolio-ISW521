@@ -1,5 +1,15 @@
-import{crearPedido, calcularTotalDia, aplicarDescuento} from "./pedidos.js";
+export function mensajePedido(pedido) {
+  return `Pedido creado para ${pedido.cliente}: ${pedido.producto} - ₡${pedido.precio}`;
+};
 
-console.log("Pedido creado para " + ${}(${})`);
+export function mensajeTotal(total) {
+  return `Total del dia: ₡${total}`;
+};
 
-console.log("Total del dia: " + calcularTotalDia());
+export function mensajeEdificio(cliente, edificio) {
+  return `${cliente} tiene registrado el edificio: ${edificio ?? "No registrado"}`;
+};
+
+export default function resumenDia(...pedidos) {
+  return `${pedidos.map(pedido =>`${pedido.cliente} pidió ${pedido.producto} por ₡${pedido.precio}`)}`;
+}
